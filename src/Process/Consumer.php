@@ -49,19 +49,22 @@ class Consumer
         $dir_iterator = new \RecursiveDirectoryIterator($this->_consumerDir);
         $iterator = new \RecursiveIteratorIterator($dir_iterator);
         foreach ($iterator as $file) {
-            if (is_dir($file)) {
+            if (is_dir($file)) { 
                 continue;
             }
             $fileinfo = new \SplFileInfo($file);
             $ext = $fileinfo->getExtension();
-            if ($ext === 'php') {
-                $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));
-                if (is_a($class, 'Webman\RedisQueue\Consumer', true)) {
+            if ($ext === 'php') { 
+                $class = str_replace('/', "\\", substr(substr($file, strlen(run_path())), 0, -4));  
+                 
+                if (is_a($class, 'Webman\RedisQueue\Consumer', true)) { 
                     $consumer = Container::get($class);
                     $connection_name = $consumer->connection ?? 'default';
-                    $queue = $consumer->queue;
+                    $queue = $consumer->queue; 
                     $connection = Client::connection($connection_name);
                     $connection->subscribe($queue, [$consumer, 'consume']);
+                     
+                    
                 }
             }
         }
