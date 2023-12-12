@@ -54,9 +54,12 @@ class Consumer
             }
             $fileinfo = new \SplFileInfo($file);
             $ext = $fileinfo->getExtension();
-            if ($ext === 'php') { 
-                $class = str_replace('/', "\\", substr(substr($file, strlen(run_path())), 0, -4));  
-                 
+            if ($ext === 'php') {  
+                $class = str_replace(base_path(),"",$file); 
+                $class = str_replace(run_path(),"",$class);  
+                $class = str_replace("/","\\",$class);  
+                $class = substr($class,0,-4);  
+                # $class = str_replace('/', "\\", substr(substr($file, strlen(base_path())), 0, -4));    
                 if (is_a($class, 'Webman\RedisQueue\Consumer', true)) { 
                     $consumer = Container::get($class);
                     $connection_name = $consumer->connection ?? 'default';
